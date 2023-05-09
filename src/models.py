@@ -1,5 +1,6 @@
-# metadata = MetaData()
-from sqlalchemy import Column, Integer, String, Double, ForeignKey, Table
+from enum import Enum as PyEnum
+
+from sqlalchemy import Column, Integer, String, Double, ForeignKey, Table, Enum
 from sqlalchemy.orm import relationship, backref
 
 from src.database import Base
@@ -29,6 +30,13 @@ product_character_link = Table('product_character_link',
                                )
 
 
+class Status(PyEnum):
+    PENDING = "pending"
+    ACTIVE = "active"
+    BANED = "baned"
+    SOLD = "sold"
+
+
 class Product(StockBase):
     __tablename__ = "product"
     id = Column(Integer, name="id", primary_key=True, index=True)
@@ -36,6 +44,7 @@ class Product(StockBase):
     name = Column(String, name="name")
     price = Column(Double, name="price")
     quantity = Column(Integer, name="quantity")
+    status = Column(Enum(Status), name="status", default=Status.ACTIVE)
     subcategory_id = Column(Integer, ForeignKey("subcategory.id"), nullable=False)
     characteristics = relationship('Characteristic', secondary=product_character_link, lazy='subquery',
                                    backref=backref('product', lazy=True))
