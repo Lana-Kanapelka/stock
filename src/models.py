@@ -1,21 +1,20 @@
 from enum import Enum as PyEnum
 
 from sqlalchemy import Column, Integer, String, Double, ForeignKey, Table, Enum
-from sqlalchemy.orm import relationship, backref
-
-from src.database import Base
-
-StockBase = Base
+from sqlalchemy.orm import relationship, backref, declarative_base
 
 
-class Category(StockBase):
+Base = declarative_base()
+
+
+class Category(Base):
     __tablename__ = "category"
     id = Column(Integer, name="id", primary_key=True, index=True)
     name = Column(String, name="name", unique=True)
     subcategories = relationship('Subcategory', backref='category', lazy=True)
 
 
-class Subcategory(StockBase):
+class Subcategory(Base):
     __tablename__ = "subcategory"
     id = Column(Integer, name="id", primary_key=True, index=True)
     name = Column(String, name="name", unique=True)
@@ -37,7 +36,7 @@ class Status(PyEnum):
     SOLD = "sold"
 
 
-class Product(StockBase):
+class Product(Base):
     __tablename__ = "product"
     id = Column(Integer, name="id", primary_key=True, index=True)
     vendor_code = Column(String, name="vendor_code", unique=True)
@@ -50,7 +49,7 @@ class Product(StockBase):
                                    backref=backref('product', lazy=True))
 
 
-class Characteristic(StockBase):
+class Characteristic(Base):
     __tablename__ = "characteristic"
     id = Column(Integer, name="id", primary_key=True, index=True)
     name = Column(String, name="name", unique=True)
