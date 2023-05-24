@@ -1,13 +1,8 @@
-from fastapi import FastAPI
+from src.categories.repository import CategoryRepository
+from src.database import Session_maker
+from src.repositories_registry import RepositoriesRegistry
+from src.server import create_server
 
-app = FastAPI()
+repositories_registry = RepositoriesRegistry(category_repository=CategoryRepository())
 
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+server = create_server(session_maker=Session_maker, repositories=repositories_registry)
